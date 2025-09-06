@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'warehouse_collection_page.dart';
+import 'ware_house_collection_page1.dart';
 
 void main() {
   runApp(const MyApp());
