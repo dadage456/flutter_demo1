@@ -51,6 +51,7 @@ class _WarehouseCollectionPageState extends State<WarehouseCollectionPage>
         ),
         title: const Text(
           '平库下架采集',
+          textAlign: TextAlign.left,
           style: TextStyle(
             color: Colors.white,
             fontSize: 18,

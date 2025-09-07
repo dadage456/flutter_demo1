@@ -42,7 +42,7 @@ class _MainContent extends StatelessWidget {
 class _TopBackground extends StatelessWidget {
   const _TopBackground();
 
-  static const double _height = 256;
+  static const double _height = 229;
 
   @override
   Widget build(BuildContext context) {
@@ -143,7 +143,7 @@ class _NotificationSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 105,
+      height: 85,
       margin: const EdgeInsets.symmetric(horizontal: 22),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -183,7 +183,7 @@ class _NotificationSection extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               e.title,
-              style: const TextStyle(color: Color(0xFF323337), fontSize: 14),
+              style: const TextStyle(color: Color(0xFF323337), fontSize: 12),
             ),
           ],
         ),
@@ -195,8 +195,8 @@ class _NotificationSection extends StatelessWidget {
     clipBehavior: Clip.none,
     children: [
       Container(
-        width: 52,
-        height: 52,
+        width: 36,
+        height: 36,
         decoration: BoxDecoration(
           color: e.color,
           borderRadius: BorderRadius.circular(12),
@@ -207,8 +207,8 @@ class _NotificationSection extends StatelessWidget {
         top: -8,
         right: -8,
         child: Container(
-          width: 25,
-          height: 25,
+          width: 20,
+          height: 20,
           decoration: BoxDecoration(
             color: const Color(0xFFFF5304),
             shape: BoxShape.circle,
@@ -219,7 +219,7 @@ class _NotificationSection extends StatelessWidget {
               '99',
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 12,
+                fontSize: 10,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -274,7 +274,7 @@ class _FunctionGrid extends StatelessWidget {
               crossAxisCount: 2,
               mainAxisExtent: 60,
               crossAxisSpacing: 12,
-              mainAxisSpacing: 12,
+              mainAxisSpacing: 8,
             ),
             itemCount: _list.length,
             itemBuilder: (_, i) => _card(_list[i], context),
