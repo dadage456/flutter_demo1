@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:marquee/marquee.dart';
+import 'ware_house_collection_page1.dart';
 
 /* ---------------- 入口 ---------------- */
 class WMSHomePage extends StatelessWidget {
@@ -50,13 +51,17 @@ class _TopBackground extends StatelessWidget {
       width: double.infinity,
       child: Stack(
         children: [
-          SvgPicture.asset('assets/images/home_top_bg.svg', fit: BoxFit.fill),
+          SvgPicture.asset(
+            'assets/images/home_top_bg.svg',
+            fit: BoxFit.fill,
+            width: double.infinity,
+          ),
           Positioned(
             top: 0,
             right: 0,
             child: SvgPicture.asset(
               'assets/images/home_top_circle.svg',
-              fit: BoxFit.cover,
+              fit: BoxFit.fill,
             ),
           ),
         ],
@@ -267,7 +272,7 @@ class _FunctionGrid extends StatelessWidget {
             physics: const NeverScrollableScrollPhysics(),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              childAspectRatio: 2.85,
+              mainAxisExtent: 60,
               crossAxisSpacing: 12,
               mainAxisSpacing: 12,
             ),
@@ -289,12 +294,23 @@ class _FunctionGrid extends StatelessWidget {
     child: Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('点击了 ${f.title}'),
-            duration: const Duration(seconds: 2),
-          ),
-        ),
+        onTap: () {
+          if (f.title == '平库出库') {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const WarehouseCollectionPage(),
+              ),
+            );
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('点击了 ${f.title}'),
+                duration: const Duration(seconds: 2),
+              ),
+            );
+          }
+        },
         borderRadius: BorderRadius.circular(8),
         splashColor: Colors.blue.withValues(alpha: 0.3),
         highlightColor: Colors.blue.withValues(alpha: 0.2),
