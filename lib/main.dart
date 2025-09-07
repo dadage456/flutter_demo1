@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'ware_house_collection_page1.dart';
+import 'package:flutter_demo/home.dart';
+import 'warehouse_collection_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
-      home: const WarehouseCollectionPage(),
+      home: const WMSHomePage(),
     );
   }
 }
