@@ -105,20 +105,12 @@ class _Header extends StatelessWidget {
               Expanded(
                 child: SizedBox(
                   height: 20,
-                  child: Marquee(
+                  child: SmoothMarquee(
                     text: '公告：重大喜讯，金风科技wms上新了',
                     style: TextStyle(
                       color: Colors.white.withValues(alpha: 0.9),
                       fontSize: 14,
                     ),
-                    scrollAxis: Axis.horizontal,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    blankSpace: 20.0,
-                    velocity: 30.0,
-                    pauseAfterRound: Duration(seconds: 2),
-                    showFadingOnlyWhenScrolling: true,
-                    fadingEdgeStartFraction: 0.1,
-                    fadingEdgeEndFraction: 0.1,
                   ),
                 ),
               ),
@@ -374,4 +366,57 @@ class FunctionItem {
   final String iconPath;
   final bool showBadge;
   const FunctionItem(this.title, this.iconPath, {this.showBadge = false});
+}
+
+class SmoothMarquee extends StatefulWidget {
+  final String text;
+  final TextStyle? style;
+  const SmoothMarquee({super.key, required this.text, this.style});
+
+  @override
+  State<SmoothMarquee> createState() => _SmoothMarqueeState();
+}
+
+class _SmoothMarqueeState extends State<SmoothMarquee>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 20), // 跑完一轮时间
+    )..repeat();
+
+    _animation = Tween<double>(begin: 1, end: -1).animate(_controller);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRect(
+      child: AnimatedBuilder(
+        animation: _animation,
+        builder: (context, child) {
+          return FractionalTranslation(
+            translation: Offset(_animation.value, 0),
+            child: child,
+          );
+        },
+        child: Text(
+          widget.text,
+          style:
+              widget.style ??
+              const TextStyle(fontSize: 14, color: Colors.white),
+        ),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 }
