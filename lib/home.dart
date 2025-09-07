@@ -144,22 +144,36 @@ class _NotificationSection extends StatelessWidget {
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: _items.map(_item).toList(),
+        children: _items.map((e) => _item(e, context)).toList(),
       ),
     );
   }
 
-  Widget _item(NotificationItem e) => Expanded(
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        _iconWithBadge(e),
-        const SizedBox(height: 8),
-        Text(
-          e.title,
-          style: const TextStyle(color: Color(0xFF323337), fontSize: 14),
+  Widget _item(NotificationItem e, BuildContext context) => Expanded(
+    child: Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () => ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('点击了 ${e.title}'),
+            duration: const Duration(seconds: 2),
+          ),
         ),
-      ],
+        borderRadius: BorderRadius.circular(8),
+        splashColor: e.color.withValues(alpha: 0.3),
+        highlightColor: e.color.withValues(alpha: 0.2),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _iconWithBadge(e),
+            const SizedBox(height: 8),
+            Text(
+              e.title,
+              style: const TextStyle(color: Color(0xFF323337), fontSize: 14),
+            ),
+          ],
+        ),
+      ),
     ),
   );
 
@@ -257,57 +271,66 @@ class _FunctionGrid extends StatelessWidget {
     );
   }
 
-  Widget _card(FunctionItem f, BuildContext context) => GestureDetector(
-    onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('点击了 ${f.title}'),
-        duration: const Duration(seconds: 2),
-      ),
+  Widget _card(FunctionItem f, BuildContext context) => Container(
+    height: 60,
+    decoration: BoxDecoration(
+      color: const Color(0xFFF3F4F6),
+      borderRadius: BorderRadius.circular(8),
     ),
-    child: Container(
-      height: 60,
-      decoration: BoxDecoration(
-        color: const Color(0xFFF3F4F6),
+    child: Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () => ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('点击了 ${f.title}'),
+            duration: const Duration(seconds: 2),
+          ),
+        ),
         borderRadius: BorderRadius.circular(8),
-      ),
-      padding: const EdgeInsets.all(15),
-      child: Stack(
-        children: [
-          Row(
+        splashColor: Colors.blue.withValues(alpha: 0.3),
+        highlightColor: Colors.blue.withValues(alpha: 0.2),
+        child: Container(
+          padding: const EdgeInsets.all(15),
+          child: Stack(
+            clipBehavior: Clip.none,
             children: [
-              SizedBox(
-                width: 32,
-                height: 32,
-                child: SvgPicture.asset(f.iconPath, fit: BoxFit.contain),
+              Row(
+                children: [
+                  SizedBox(
+                    width: 32,
+                    height: 32,
+                    child: SvgPicture.asset(f.iconPath, fit: BoxFit.contain),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      f.title,
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  f.title,
-                  style: const TextStyle(
-                    color: Colors.black,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
+              if (f.showBadge)
+                Positioned(
+                  top: -8,
+                  right: -8,
+                  child: Container(
+                    width: 12,
+                    height: 12,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFF5304),
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.white, width: 2),
+                    ),
                   ),
                 ),
-              ),
             ],
           ),
-          if (f.showBadge)
-            Positioned(
-              top: 0,
-              right: 0,
-              child: Container(
-                width: 12,
-                height: 12,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFFF5304),
-                  shape: BoxShape.circle,
-                  border: Border.all(color: Colors.white, width: 2),
-                ),
-              ),
-            ),
-        ],
+        ),
       ),
     ),
   );
