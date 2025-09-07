@@ -98,13 +98,22 @@ class _Header extends StatelessWidget {
               const Icon(Icons.volume_up, color: Colors.white, size: 20),
               const SizedBox(width: 8),
               Expanded(
-                child: Text(
-                  '公告：重大喜讯，金风科技wms上新了',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: Colors.white.withValues(alpha: 0.9),
-                    fontSize: 14,
+                child: SizedBox(
+                  height: 20,
+                  child: Marquee(
+                    text: '公告：重大喜讯，金风科技wms上新了',
+                    style: TextStyle(
+                      color: Colors.white.withValues(alpha: 0.9),
+                      fontSize: 14,
+                    ),
+                    scrollAxis: Axis.horizontal,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    blankSpace: 20.0,
+                    velocity: 30.0,
+                    pauseAfterRound: Duration(seconds: 2),
+                    showFadingOnlyWhenScrolling: true,
+                    fadingEdgeStartFraction: 0.1,
+                    fadingEdgeEndFraction: 0.1,
                   ),
                 ),
               ),
@@ -190,8 +199,8 @@ class _NotificationSection extends StatelessWidget {
         child: Icon(e.icon, color: Colors.white, size: 28),
       ),
       Positioned(
-        top: -2,
-        right: -2,
+        top: -8,
+        right: -8,
         child: Container(
           width: 25,
           height: 25,
