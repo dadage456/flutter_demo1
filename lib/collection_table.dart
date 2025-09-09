@@ -59,8 +59,9 @@ class _CollectionTableState extends State<CollectionTable> {
             builder: (_) {
               debugPrint('-------${_dataSource.sortedColumns}');
               // 未排序列 → 返回空白
-              if (_dataSource.sortedColumns.isEmpty)
-                return (width: 16, height: 16);
+              if (_dataSource.sortedColumns.isEmpty) {
+                return SizedBox(width: 16, height: 16);
+              }
 
               // 能走到这里，说明当前 Builder 位于“已排序列”的 Header 里
               final column = _dataSource.sortedColumns.first;
