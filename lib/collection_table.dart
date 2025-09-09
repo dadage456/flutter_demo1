@@ -27,6 +27,7 @@ class CollectionTable extends StatefulWidget {
 class _CollectionTableState extends State<CollectionTable> {
   late CollectionDataSource _dataSource;
   late Map<String, double> columnWidths = {};
+  final _customColumnSize = CustomColumnSizer();
 
   final List<CollectionItem> items = List.generate(
     10,
@@ -56,21 +57,28 @@ class _CollectionTableState extends State<CollectionTable> {
           gridLineColor: _borderColor,
           headerColor: _titleBgColor,
           sortIcon: Builder(
-            builder: (_) {
-              debugPrint('-------${_dataSource.sortedColumns}');
-              // 未排序列 → 返回空白
-              if (_dataSource.sortedColumns.isEmpty) {
-                return SizedBox(width: 16, height: 16);
+            builder: (context) {
+              Widget? icon;
+              String columnName = '';
+              context.visitAncestorElements((element) {
+                if (element is GridHeaderCellElement) {
+                  columnName = element.column.columnName;
+                }
+                return true;
+              });
+              var column = _dataSource.sortedColumns
+                  .where((element) => element.name == columnName)
+                  .firstOrNull;
+              if (column != null) {
+                if (column.sortDirection == DataGridSortDirection.ascending) {
+                  icon = const Icon(Icons.arrow_drop_up, size: 16);
+                } else if (column.sortDirection ==
+                    DataGridSortDirection.descending) {
+                  icon = const Icon(Icons.arrow_drop_down, size: 16);
+                }
               }
-
-              // 能走到这里，说明当前 Builder 位于“已排序列”的 Header 里
-              final column = _dataSource.sortedColumns.first;
-              return Icon(
-                column.sortDirection == DataGridSortDirection.ascending
-                    ? Icons.arrow_circle_up_rounded
-                    : Icons.arrow_circle_down_rounded,
-                size: 16,
-              );
+              // return icon ?? const Icon(Icons.sort_outlined, size: 16);
+              return icon ?? SizedBox();
             },
           ),
         ),
@@ -85,6 +93,7 @@ class _CollectionTableState extends State<CollectionTable> {
             return true;
           },
           columnWidthMode: ColumnWidthMode.auto,
+          // columnSizer: _customColumnSize,
           // defaultColumnWidth: 100,
           gridLinesVisibility: GridLinesVisibility.both,
           headerGridLinesVisibility: GridLinesVisibility.both,
@@ -104,30 +113,10 @@ class _CollectionTableState extends State<CollectionTable> {
               columnName: 'materialCode',
               width: columnWidths['materialCode'] ?? double.nan,
               autoFitPadding: const EdgeInsets.symmetric(horizontal: 8),
-              label: Builder(
-                builder: (context) {
-                  final sortedColumn = _dataSource.sortedColumns
-                      .where((c) => c.name == 'id')
-                      .toList();
-
-                  final icon = sortedColumn.isNotEmpty
-                      ? Icon(
-                          sortedColumn.first.sortDirection ==
-                                  DataGridSortDirection.ascending
-                              ? Icons.arrow_circle_up_rounded
-                              : Icons.arrow_circle_down_rounded,
-                          size: 16,
-                        )
-                      : const SizedBox(width: 16, height: 16);
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text('物料编码', style: _titleStyle),
-                      const SizedBox(width: 4),
-                      icon,
-                    ],
-                  );
-                },
+              label: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                alignment: Alignment.centerLeft,
+                child: const Text('物料编码', style: _titleStyle),
               ),
             ),
             GridColumn(
@@ -231,5 +220,22 @@ class CollectionDataSource extends DataGridSource {
 
   void updateDataGridRow() {
     notifyListeners();
+  }
+}
+
+class CustomColumnSizer extends ColumnSizer {
+  @override
+  double computeHeaderCellWidth(GridColumn column, TextStyle style) {
+    return super.computeHeaderCellWidth(column, style);
+  }
+
+  @override
+  double computeCellWidth(
+    GridColumn column,
+    DataGridRow row,
+    Object? cellValue,
+    TextStyle textStyle,
+  ) {
+    return super.computeCellWidth(column, row, cellValue, textStyle);
   }
 }
