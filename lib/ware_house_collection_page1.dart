@@ -4,6 +4,15 @@ import 'package:flutter_demo/collection_table.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 const Color _bgColor = Color(0xFFF6F6F6);
+const TextStyle _appBarTextStyle = TextStyle(
+  color: Colors.white,
+  fontSize: 18,
+  fontWeight: FontWeight.w600,
+);
+const TextStyle _infoTextStyle = const TextStyle(
+  fontSize: 14,
+  fontWeight: FontWeight.w400,
+);
 
 class WarehouseCollectionPage extends StatefulWidget {
   const WarehouseCollectionPage({super.key});
@@ -68,11 +77,7 @@ class _WarehouseCollectionPageState extends State<WarehouseCollectionPage>
       title: const Text(
         '平库下架采集',
         textAlign: TextAlign.center,
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 18,
-          fontWeight: FontWeight.w500,
-        ),
+        style: _appBarTextStyle,
       ),
       actions: [
         TextButton(
@@ -143,6 +148,7 @@ class _WarehouseCollectionPageState extends State<WarehouseCollectionPage>
         unselectedLabelColor: Colors.grey,
         indicatorColor: const Color(0xFF1976D2),
         indicatorWeight: 3,
+        labelStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
         tabs: const [
           Tab(text: '任务列表'),
           Tab(text: '正在采集'),
@@ -224,20 +230,8 @@ class _WarehouseCollectionPageState extends State<WarehouseCollectionPage>
                     borderRadius: BorderRadius.circular(2), // 圆角半径，数值越大越圆
                   ),
                 ),
-                Text(
-                  label1,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-                Text(
-                  value1,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
+                Text(label1, style: _infoTextStyle),
+                Text(value1, style: _infoTextStyle),
               ],
             ),
           ),
@@ -254,20 +248,8 @@ class _WarehouseCollectionPageState extends State<WarehouseCollectionPage>
                       borderRadius: BorderRadius.circular(2), // 圆角半径，数值越大越圆
                     ),
                   ),
-                  Text(
-                    label2,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  Text(
-                    value2,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
+                  Text(label2, style: _infoTextStyle),
+                  Text(value2, style: _infoTextStyle),
                 ],
               ),
             ),
