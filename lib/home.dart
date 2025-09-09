@@ -42,7 +42,7 @@ class _MainContent extends StatelessWidget {
 class _TopBackground extends StatelessWidget {
   const _TopBackground();
 
-  static const double _height = 229;
+  static const double _height = 286;
 
   @override
   Widget build(BuildContext context) {
@@ -85,6 +85,7 @@ class _Header extends StatelessWidget {
             icon: const Icon(Icons.logout, color: Colors.white, size: 24),
           ),
         ),
+        const SizedBox(height: 28),
         const Center(
           child: Text(
             '金风科技WMS',
@@ -95,7 +96,7 @@ class _Header extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 40),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30),
           child: Row(
@@ -250,14 +251,14 @@ class _FunctionGrid extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            '功能',
-            style: TextStyle(
-              color: Color(0xFF374150),
-              fontSize: 24,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
+          // const Text(
+          //   '功能',
+          //   style: TextStyle(
+          //     color: Color(0xFF374150),
+          //     fontSize: 24,
+          //     fontWeight: FontWeight.w500,
+          //   ),
+          // ),
           const SizedBox(height: 12),
           GridView.builder(
             shrinkWrap: true,

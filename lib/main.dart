@@ -16,6 +16,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
+        textTheme: const TextTheme(
+          displayMedium: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w500),
+          bodyMedium: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w400),
+        ),
         pageTransitionsTheme: const PageTransitionsTheme(
           builders: {
             TargetPlatform.android: CupertinoPageTransitionsBuilder(),
@@ -23,7 +27,7 @@ class MyApp extends StatelessWidget {
           },
         ),
       ),
-      home: const WMSHomePage(),
+      home: WMSHomePage(),
     );
   }
 }

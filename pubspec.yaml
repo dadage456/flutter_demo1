@@ -37,6 +37,7 @@ dependencies:
   flutter_hooks: ^0.20.5
   flutter_svg: ^2.2.0
   marquee: ^2.3.0
+  syncfusion_flutter_datagrid: ^27.1.48
 
 dev_dependencies:
   flutter_test:
