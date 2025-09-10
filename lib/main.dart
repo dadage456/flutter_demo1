@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_demo/home.dart';
+import 'package:flutter_demo/test1.dart';
 import 'warehouse_collection_page.dart';
 
 void main() {
@@ -27,7 +28,7 @@ class MyApp extends StatelessWidget {
           },
         ),
       ),
-      home: WMSHomePage(),
+      home: DemoPage(),
     );
   }
 }

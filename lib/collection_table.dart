@@ -28,7 +28,9 @@ class _CollectionTableState extends State<CollectionTable> {
   late CollectionDataSource _dataSource;
   late Map<String, double> columnWidths = {};
   final _customColumnSize = CustomColumnSizer();
-
+  final datapagerHeight = 64.0;
+  final _rowsPerPage = 5;
+  final _pageCount = 10;
   final List<CollectionItem> items = List.generate(
     10,
     (index) => CollectionItem(
@@ -47,7 +49,21 @@ class _CollectionTableState extends State<CollectionTable> {
 
   @override
   Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        return Column(
+          children: [
+            _buildTable(context, constraints),
+            _buildTablePage(context, constraints),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildTable(BuildContext context, BoxConstraints constraints) {
     return Container(
+      height: constraints.maxHeight - datapagerHeight,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(8),
@@ -155,6 +171,33 @@ class _CollectionTableState extends State<CollectionTable> {
       ),
     );
   }
+
+  Widget _buildTablePage(BuildContext context, BoxConstraints constraints) {
+    return Container(
+      height: datapagerHeight,
+      decoration: BoxDecoration(color: Colors.white),
+      child: SfDataPagerTheme(
+        data: SfDataPagerThemeData(
+          itemBorderWidth: 0.5,
+          itemBorderColor: Colors.grey[200],
+          itemBorderRadius: BorderRadius.circular(4),
+          selectedItemColor: Colors.blue,
+          selectedItemTextStyle: TextStyle(color: Colors.white),
+        ),
+        child: SfDataPager(
+          delegate: _dataSource,
+          pageCount: 100,
+          visibleItemsCount: 6,
+          itemWidth: 40,
+          itemHeight: 40,
+          navigationItemWidth: 66,
+          navigationItemHeight: 40,
+          firstPageItemVisible: false,
+          lastPageItemVisible: false,
+        ),
+      ),
+    );
+  }
 }
 
 class CollectionItem {
@@ -172,33 +215,13 @@ class CollectionItem {
 }
 
 class CollectionDataSource extends DataGridSource {
-  CollectionDataSource(this.items) {
-    dataGridRows = items.map<DataGridRow>((item) {
-      return DataGridRow(
-        cells: [
-          DataGridCell<String>(
-            columnName: 'materialCode',
-            value: item.materialCode,
-          ),
-          DataGridCell<String>(columnName: 'location', value: item.location),
-          DataGridCell<int>(
-            columnName: 'taskQuantity',
-            value: item.taskQuantity,
-          ),
-          DataGridCell<int>(
-            columnName: 'collectedQuantity',
-            value: item.collectedQuantity,
-          ),
-        ],
-      );
-    }).toList();
-  }
+  CollectionDataSource(this.items);
 
   final List<CollectionItem> items;
   List<DataGridRow> dataGridRows = [];
 
   @override
-  List<DataGridRow> get rows => dataGridRows;
+  List<DataGridRow> get infos => dataGridRows;
 
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {
@@ -220,6 +243,39 @@ class CollectionDataSource extends DataGridSource {
 
   void updateDataGridRow() {
     notifyListeners();
+  }
+
+  @override
+  Future<bool> handlePageChange(int oldPageIndex, int newPageIndex) async {
+    debugPrint(
+      '------------ oldPageIndex: $oldPageIndex, newPageIndex: $newPageIndex',
+    );
+    buildPaginatedDataGridRows();
+    notifyListeners();
+
+    return true;
+  }
+
+  void buildPaginatedDataGridRows() {
+    dataGridRows = items.map<DataGridRow>((item) {
+      return DataGridRow(
+        cells: [
+          DataGridCell<String>(
+            columnName: 'materialCode',
+            value: item.materialCode,
+          ),
+          DataGridCell<String>(columnName: 'location', value: item.location),
+          DataGridCell<int>(
+            columnName: 'taskQuantity',
+            value: item.taskQuantity,
+          ),
+          DataGridCell<int>(
+            columnName: 'collectedQuantity',
+            value: item.collectedQuantity,
+          ),
+        ],
+      );
+    }).toList();
   }
 }
 
