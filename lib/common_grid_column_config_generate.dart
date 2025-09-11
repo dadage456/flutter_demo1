@@ -3,7 +3,7 @@ import 'package:flutter_demo/collection_table.dart';
 import 'package:flutter_demo/common_grid.dart/common_data_grid.dart';
 
 class CommonGridColumnGenerate {
-  static List<GridColumnConfig<CollectionItem>> generateGridColumns() {
+  static List<GridColumnConfig<CollectionItem>> generateGridColumnsForCollectionTable() {
     return [
       GridColumnConfig(
         name: 'materialCode',
