@@ -24,7 +24,7 @@ typedef HeaderBuilder = Widget? Function(String columnName, String headerText);
 
 class CommonDataGrid<T> extends StatefulWidget {
   /* 列配置 */
-  final List<GridColumnConfig> columns;
+  final List<GridColumnConfig<T>> columns;
 
   /* 行数据 */
   final List<T> datas;
@@ -36,8 +36,8 @@ class CommonDataGrid<T> extends StatefulWidget {
   final LoadDataFunction onLoadData;
 
   /* 选中控制 */
-  final List<T> selectedRows;
-  final ValueChanged<List<T>>? onSelectionChanged;
+  final List<int> selectedRows;
+  final ValueChanged<List<int>>? onSelectionChanged;
 
   /* 显隐控制 */
   final bool allowPager;
@@ -75,6 +75,7 @@ class _CommonDataGridState<T> extends State<CommonDataGrid<T>> {
   late _CommonDataSource<T> _source;
   late DataGridController _controller;
   late DataPagerController _dataPagerController;
+  Set<int> _selectedIndexInPage = {};
 
   @override
   void initState() {
@@ -97,16 +98,19 @@ class _CommonDataGridState<T> extends State<CommonDataGrid<T>> {
   void didUpdateWidget(covariant CommonDataGrid<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.datas != widget.datas ||
-        oldWidget.selectedRows != widget.selectedRows) {}
+        oldWidget.currentPage != widget.currentPage) {
+      _source = _CommonDataSource<T>(
+        datas: widget.datas,
+        columns: widget.columns,
+        onLoadData: widget.onLoadData,
+      );
+      // _dataPagerController.selectedPageIndex = widget.currentPage;
 
-    _source = _CommonDataSource<T>(
-      datas: widget.datas,
-      columns: widget.columns,
-      onLoadData: widget.onLoadData,
-    );
-
-    _dataPagerController.selectedPageIndex = widget.currentPage;
-    debugPrint('currentPage: ${widget.currentPage}');
+      _selectedIndexInPage.clear(); // 数据变了就清空
+      debugPrint(
+        '----- table didUpdateWidget currentPage: ${widget.currentPage}',
+      );
+    }
   }
 
   @override
@@ -171,6 +175,7 @@ class _CommonDataGridState<T> extends State<CommonDataGrid<T>> {
                   columnWidthMode: ColumnWidthMode.auto,
                   gridLinesVisibility: GridLinesVisibility.both,
                   headerGridLinesVisibility: GridLinesVisibility.both,
+                  onSelectionChanged: _handleSelectionChanged,
 
                   onColumnResizeUpdate: (ColumnResizeUpdateDetails details) {
                     setState(() {
@@ -245,12 +250,36 @@ class _CommonDataGridState<T> extends State<CommonDataGrid<T>> {
       ),
     );
   }
+
+  void _handleSelectionChanged(
+    List<DataGridRow> added,
+    List<DataGridRow> removed,
+  ) {
+    // 1. 把 DataGridRow 转成它在当前页里的索引
+    void addIndex(DataGridRow r) {
+      final idx = _source.rows.indexOf(r);
+      if (idx >= 0) _selectedIndexInPage.add(idx);
+    }
+
+    void removeIndex(DataGridRow r) {
+      final idx = _source.rows.indexOf(r);
+      if (idx >= 0) _selectedIndexInPage.remove(idx);
+    }
+
+    added.forEach(addIndex);
+    removed.forEach(removeIndex);
+
+    debugPrint('selectedIndexInPage: ${_selectedIndexInPage.join(', ')}');
+
+    // 2. 通知外部：把索引集合转 List 并回调
+    widget.onSelectionChanged?.call(_selectedIndexInPage.toList());
+  }
 }
 
 /* ------------------ 数据源 ------------------ */
 class _CommonDataSource<T> extends DataGridSource {
   final List<T> datas;
-  final List<GridColumnConfig> columns;
+  final List<GridColumnConfig<T>> columns;
   final LoadDataFunction onLoadData;
 
   _CommonDataSource({
@@ -280,15 +309,15 @@ class _CommonDataSource<T> extends DataGridSource {
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {
     final index = rows.indexOf(row);
-    final color = index % 2 == 0 ? Colors.white : _infoBgColor;
-    final rowData = rows[index];
+    final effectiveIndex = effectiveRows.indexOf(row);
+    final color = effectiveIndex % 2 == 0 ? Colors.white : _infoBgColor;
 
     return DataGridRowAdapter(
       color: color,
       cells: row.getCells().map<Widget>((cell) {
         final col = columns.firstWhere((e) => e.name == cell.columnName);
         final custom = col.cellBuilder?.call(
-          rowData,
+          datas[index],
           cell.columnName,
           cell.value,
         );

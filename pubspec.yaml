@@ -41,6 +41,7 @@ dependencies:
   syncfusion_flutter_core: ^31.1.17
   number_paginator: ^1.1.1
   flutter_bloc: ^8.1.0
+  equatable: ^2.0.5 
 
 dev_dependencies:
   flutter_test:

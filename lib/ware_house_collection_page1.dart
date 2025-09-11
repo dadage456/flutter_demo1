@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_demo/collection_table.dart';
+import 'package:flutter_demo/common_grid.dart/common_data_grid.dart';
+import 'package:flutter_demo/common_grid.dart/grid_bloc.dart';
+import 'package:flutter_demo/common_grid.dart/grid_event.dart';
+import 'package:flutter_demo/common_grid.dart/grid_state.dart';
+import 'package:flutter_demo/common_grid_column_config_generate.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 const Color _bgColor = Color(0xFFF6F6F6);
@@ -26,11 +32,27 @@ class _WarehouseCollectionPageState extends State<WarehouseCollectionPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final TextEditingController _scanController = TextEditingController();
+  late final CommonDataGridBloc<CollectionItem> _bloc;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+
+    _bloc = CommonDataGridBloc<CollectionItem>(
+      dataLoader: (pageIndex) async {
+        await Future.delayed(const Duration(seconds: 1));
+        return List.generate(
+          150,
+          (i) => CollectionItem(
+            materialCode: '1000650$i',
+            location: 'C1PR56020$i',
+            taskQuantity: 100 + i,
+            collectedQuantity: i,
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -158,7 +180,43 @@ class _WarehouseCollectionPageState extends State<WarehouseCollectionPage>
   }
 
   Widget _buildTabContent() {
-    return CollectionTable();
+    return BlocProvider(
+      create: (context) => _bloc,
+      child:
+          BlocBuilder<
+            CommonDataGridBloc<CollectionItem>,
+            CommonDataGridState<CollectionItem>
+          >(
+            builder: (context, state) {
+              debugPrint('------------------构建表格 ------------------');
+              print(
+                '--------rows: ${state.status}  ${state.errorMessage ?? ''}',
+              );
+              debugPrint('--------selected rows: ${state.selectedRows}');
+              return CommonDataGrid<CollectionItem>(
+                columns:
+                    CommonGridColumnGenerate.generateGridColumnsForCollectionTable(),
+                currentPage: state.currentPage,
+                totalPages: state.totalPages,
+                onLoadData: (pageIndex) async {
+                  debugPrint('load page data $pageIndex');
+                  await Future.delayed(const Duration(microseconds: 1));
+
+                  _bloc.add(LoadDataEvent(pageIndex));
+                },
+
+                selectedRows: state.selectedRows,
+                onSelectionChanged: (list) {
+                  debugPrint('selectedRows: $list');
+                  _bloc.add(ChangeSelectedRowsEvent(list));
+                },
+                datas: state.data,
+                allowPager: true,
+                allowSelect: true,
+              );
+            },
+          ),
+    );
   }
 
   Widget _buildBottomButtons() {

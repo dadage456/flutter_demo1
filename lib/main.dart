@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_demo/home.dart';
 import 'package:flutter_demo/test1.dart';
-import 'warehouse_collection_page.dart';
+
+import 'ware_house_collection_page1.dart';
 
 void main() {
   runApp(const MyApp());
@@ -28,7 +29,7 @@ class MyApp extends StatelessWidget {
           },
         ),
       ),
-      home: DemoPage(),
+      home: WarehouseCollectionPage(),
     );
   }
 }
